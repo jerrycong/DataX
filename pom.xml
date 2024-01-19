@@ -47,7 +47,9 @@
         <module>transformer</module>
 
         <!-- reader -->
-        <module>mysqlreader</module>
+        <module>restreader</module>
+
+       <!-- <module>mysqlreader</module>
         <module>drdsreader</module>
         <module>sqlserverreader</module>
         <module>postgresqlreader</module>
@@ -65,8 +67,8 @@
         <module>hbase11xsqlreader</module>
         <module>hbase20xsqlreader</module>
 
-        <module>ossreader</module>
-        <module>hdfsreader</module>
+        &lt;!&ndash;<module>ossreader</module>&ndash;&gt;
+        &lt;!&ndash;<module>hdfsreader</module>&ndash;&gt;
         <module>ftpreader</module>
         <module>txtfilereader</module>
         <module>streamreader</module>
@@ -81,7 +83,7 @@
         <module>datahubreader</module>
         <module>starrocksreader</module>
 
-        <!-- writer -->
+        &lt;!&ndash; writer &ndash;&gt;
         <module>mysqlwriter</module>
         <module>starrockswriter</module>
         <module>drdswriter</module>
@@ -98,7 +100,7 @@
 
 
         <module>odpswriter</module>
-        <module>osswriter</module>
+        &lt;!&ndash;<module>osswriter</module>&ndash;&gt;
         <module>otswriter</module>
         <module>hbase11xwriter</module>
         <module>hbase094xwriter</module>
@@ -106,7 +108,7 @@
         <module>hbase20xsqlwriter</module>
         <module>kuduwriter</module>
         <module>ftpwriter</module>
-        <module>hdfswriter</module>
+        &lt;!&ndash;<module>hdfswriter</module>&ndash;&gt;
         <module>txtfilewriter</module>
         <module>streamwriter</module>
 
@@ -126,12 +128,12 @@
         <module>adbmysqlwriter</module>
         <module>neo4jwriter</module>
 
-        <!-- common support module -->
+        &lt;!&ndash; common support module &ndash;&gt;
         <module>plugin-rdbms-util</module>
         <module>plugin-unstructured-storage-util</module>
         <module>gaussdbreader</module>
         <module>gaussdbwriter</module>
-        <module>datax-example</module>
+        <module>datax-example</module>-->
 
     </modules>
 

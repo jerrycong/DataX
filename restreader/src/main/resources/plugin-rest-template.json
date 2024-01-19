@@ -1,0 +1,26 @@
+{
+  "name": "restreader",
+  "parameter": {
+    "url":"http://127.0.0.1:5000/get_array5",
+    "dataPath": "result",
+    "responseType":"json",
+    "column":[
+      {
+        "type":"long",
+        "name":"a.b"
+      },
+      {
+        "type":"string",
+        "name":"a.c"
+      }
+    ],
+    "method":"get",
+    "timeout": 3,
+    "body": "",
+    "customHeader":{
+      "X-Custom-Header2":"test header2"
+    },
+    "parameters":"abc=1&amp;def=1",
+    "encoding": "UTF-8"
+  }
+}

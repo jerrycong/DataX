@@ -1,0 +1,64 @@
+{
+    "job": {
+        "setting": {
+            "speed": {
+                "channel":1
+            },
+            "errorLimit": {
+                "record": 0,
+                "percentage": 0.02
+            }
+        },
+        "content": [
+            {
+                "reader": {
+                    "name": "restreader",
+                    "parameter": {
+                        "url": "http://transit.devdolphin.com/ga-pcs-bs-back/patrol/case_info_alarm/listAlarm",
+                        "method": "post",
+                        "dataPath": "result.content",
+                        "pagination":true,
+                        "totalParamPath":"result.totalElements",
+                        "startIndexParam":"pageIndex",
+                        "pageSizeParam":"pageSize",
+                        "pageNoParam":"pageNo",
+                        "body": "{\"caseNo\":\"\",\"caseName\":\"\",\"status\":\"\",\"deptCode\":\"\",\"acceptPeople\":\"\",\"closePoliceNo\":\"\",\"type\":\"0\",\"expireDateStart\":\"\",\"expireDateEnd\":\"\",\"pageNo\":0,\"pageSize\":20}",
+                        "customHeader": {
+                            "Jwt-Token": "eyJhbGciOiJSUzI1NiJ9.eyJhdXRoVXNlckRldGFpbHMiOiJ7XCJ1c2VyXCI6IHtcImNvZGVcIjogXCI4MDAwMDRcIn19Iiwic3ViIjoicWhwY3MiLCJkZWZhdWx0R3JhbnRTY29wZSI6IiIsImFtciI6Im1mYSIsImlzcyI6Imh0dHA6Ly9kZXYuY3RzcC5rZWRhY29tLmNvbS9jbG91ZC1yYmFjIiwiYXV0aFRpbWUiOjE3MDU3MjExODQ4OTksImFjY2Vzc1Rva2VuIjoibWpDQStkNUJJbFZqejl3M0w4MkUwa0JBY21Wb0x2SUJXTUxYbGVDU29tK25nMTVtUnlGY1NlVFRRSElpdHdrUnljc21XK0lFYzZOL1FSTmMveXZsS1JZWk5hYXJ4VEpyc2d0eWtMSUYvY1k9Iiwibm9uY2UiOm51bGwsImF1ZCI6ImdhLXBjcy1icy1iYWNrIiwiYWNyIjoidXJuOm1hY2U6aW5jb21tb246aWFwOnNpbHZlciIsImF6cCI6IiIsInRlbmFudElkIjpudWxsLCJleHAiOjE3MDU3MjExODQsImlhdCI6MTcwNTYzNDc4NH0.FdIPpL_OpeZ2I-wcS4KlJiIspRD2Kd7aTz-Akn-dth_X8c7h4zki0Mt0DAjpDIhtBdf-bWXR0hw0wa5KO8iRuDqpqKTfhV6QcGOPsWArT59wcowxkoSyidSGrC103hBmbjWnxlJONnP5uZF_zZtA503DS6Yaefn8awX4E1RdoRg"
+                        },
+                        "column" : [
+                            {
+                                "value": "id",
+                                "type": "long"
+                            },
+                            {
+                                "value": "caseName",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "writer": {
+                     "name": "mysqlwriter",
+                        "parameter": {
+                            "writeMode": "insert",
+                            "username": "root",
+                            "password": "root",
+                            "column": [                                
+                                "type",
+                                "name"
+                            ],                            
+                            "connection": [
+                                {
+                                    "jdbcUrl": "jdbc:mysql://127.0.0.1:3306/datax?characterEncoding=utf-8",
+                                    "table": [
+                                        "test"
+                                    ]
+                                }
+                            ]
+                        }
+                }
+            }
+        ]
+    }
+}

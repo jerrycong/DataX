@@ -1,0 +1,63 @@
+{
+    "job": {
+        "setting": {
+            "speed": {
+                "channel":1
+            },
+            "errorLimit": {
+                "record": 0,
+                "percentage": 0.02
+            }
+        },
+        "content": [
+            {
+                "reader": {
+                    "name": "restreader",
+                    "parameter": {
+                        "url": "http://10.68.6.40/usmp-backend/card/records?pageNo=1&pageIndex=0&pageSize=10&timeRangeType=0&doorId=",
+                        "method": "get",
+                        "dataPath": "rows",
+                        "pagination":true,
+                        "totalParamPath":"total",
+                        "startIndexParam":"pageIndex",
+                        "pageSizeParam":"pageSize",
+                        "pageNoParam":"pageNo",                        
+                        "customHeader": {
+                            "Jwt-Token": "eyJhbGciOiJSUzI1NiJ9.eyJhdXRoVXNlckRldGFpbHMiOiJ7XCJ1c2VyXCI6IHtcImNvZGVcIjogXCIwMDA4XCJ9fSIsInN1YiI6IlVzbXBBZG1pbiIsImRlZmF1bHRHcmFudFNjb3BlIjoiIiwiYW1yIjoibWZhIiwiaXNzIjoiaHR0cDovL2Rldi5jdHNwLmtlZGFjb20uY29tL2Nsb3VkLXJiYWMiLCJhdXRoVGltZSI6MTcwODIyMzUzNDk5NiwiYWNjZXNzVG9rZW4iOiJtakNBK2Q1QklsVmp6OXczTDgyRTB2aFVlVkRweVExNlV4SUJ0M0g3aTd0blNzZWNGY2s1QzBGQjlzSDFFam5LV21wZko4QlVvTFFIMDhDQkluaVVVQXhWaWRKdkNTNEU5b0pncjZwdmJORT0iLCJub25jZSI6bnVsbCwiYXVkIjoidHktdXNtcC1iYWNrZW5kIiwiYWNyIjoidXJuOm1hY2U6aW5jb21tb246aWFwOnNpbHZlciIsImF6cCI6IiIsInRlbmFudElkIjpudWxsLCJleHAiOjE3MDgyMjM1MzQsImlhdCI6MTcwNTYzMTUzNH0.pZvVozEi595HMt5A5Sj_WmCvNrubZOe0TFnycYF3MrmQbjcF_dDFLlYQh55Po_Zd2eJBwbm9oyO9HNyMsTOq0A"
+                        },
+                        "column" : [
+                            {
+                                "value": "id",
+                                "type": "long"
+                            },
+                            {
+                                "value": "gbid",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "writer": {
+                     "name": "mysqlwriter",
+                        "parameter": {
+                            "writeMode": "insert",
+                            "username": "root",
+                            "password": "root",
+                            "column": [                                
+                                "type",
+                                "name"
+                            ],                            
+                            "connection": [
+                                {
+                                    "jdbcUrl": "jdbc:mysql://127.0.0.1:3306/datax?characterEncoding=utf-8",
+                                    "table": [
+                                        "test"
+                                    ]
+                                }
+                            ]
+                        }
+                }
+            }
+        ]
+    }
+}

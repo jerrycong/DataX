@@ -1,0 +1,6 @@
+{
+    "name": "restreader",
+    "class": "com.alibaba.datax.plugin.reader.restreader.RestReader",
+    "developer": "cyj"
+}
+
