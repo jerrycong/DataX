@@ -1,5 +1,6 @@
 package com.alibaba.datax.plugin.reader.restreader;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
@@ -8,15 +9,23 @@ import com.alibaba.datax.common.exception.CommonErrorCode;
 import com.alibaba.datax.common.exception.DataXException;
 import com.alibaba.datax.common.plugin.RecordSender;
 import com.alibaba.datax.common.util.Configuration;
-import com.alibaba.datax.plugin.unstructuredstorage.reader.ColumnEntry;
-import com.alibaba.datax.plugin.unstructuredstorage.reader.Key;
-import com.alibaba.datax.plugin.unstructuredstorage.reader.UnstructuredStorageReaderUtil;
-import com.alibaba.fastjson2.JSON;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+//import com.alibaba.datax.plugin.unstructuredstorage.reader.ColumnEntry;
+//import com.alibaba.datax.plugin.unstructuredstorage.reader.ColumnEntry;
+//import com.alibaba.datax.plugin.unstructuredstorage.reader.Key;
+//import com.alibaba.datax.plugin.unstructuredstorage.reader.UnstructuredStorageReaderUtil;
+//import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
+import org.apache.commons.lang3.StringUtils;
+//import org.apache.commons.collections.CollectionUtils;
+//import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -95,6 +104,7 @@ public abstract class BaseRestRequest implements RestRequest {
         if(StringUtils.isNotBlank(this.parameters)){
             url += "?" + this.parameters;
         }
+        LOG.info("Begin to sendHttpRequest by url: [{}\n]", url);
         HttpRequest request = HttpUtil.createRequest(this.getMethod(), url);
         request.setReadTimeout(this.timeout * 1000);
         if(this.customHeader != null){
@@ -134,6 +144,8 @@ public abstract class BaseRestRequest implements RestRequest {
     public int getTotalPages() {
         return this.totalPages;
     }
+    
+    
 
     @Override
     public void send2Writer(RecordSender recordSender, String jsonResp){
@@ -141,9 +153,11 @@ public abstract class BaseRestRequest implements RestRequest {
         Configuration jsonData = Configuration.from(jsonResp);
 //        LOG.info("jsonData: {}", jsonData);
         List<Object> dataList = jsonData.getList(this.dataPath);
+        
 
-        List<ColumnEntry> columns = UnstructuredStorageReaderUtil.getListColumnEntry(this.configuration, Key.COLUMN);
-        if(CollectionUtils.isNotEmpty(dataList)){
+//        List<ColumnEntry> columns = UnstructuredStorageReaderUtil.getListColumnEntry(this.configuration, Key.COLUMN);
+        List<ColumnEntry> columns = getListColumnEntry(this.configuration, "column");
+        if(CollectionUtil.isNotEmpty(dataList)){
             for (Object object : dataList) {
                 String singleDataJson = JSON.toJSONString(object);
                 Record record = recordSender.createRecord();
@@ -162,15 +176,29 @@ public abstract class BaseRestRequest implements RestRequest {
         }
 
     }
+    
+    public static List<ColumnEntry> getListColumnEntry(
+			Configuration configuration, final String path) {
+		List<JSONObject> lists = configuration.getList(path, JSONObject.class);
+		if (lists == null) {
+			return null;
+		}
+		List<ColumnEntry> result = new ArrayList<ColumnEntry>();
+		for (final JSONObject object : lists) {
+			result.add(JSON.parseObject(object.toJSONString(),
+					ColumnEntry.class));
+		}
+		return result;
+	}
 
     @Override
     public void validate() {
-        List<ColumnEntry> columns = UnstructuredStorageReaderUtil.getListColumnEntry(this.configuration, Key.COLUMN);
-        if (null == columns || columns.size() == 0) {
-            throw DataXException.asDataXException(
-                    CommonErrorCode.CONFIG_ERROR,
-                    "column属性必填");
-        }
+//        List<ColumnEntry> columns = UnstructuredStorageReaderUtil.getListColumnEntry(this.configuration, Key.COLUMN);
+//        if (null == columns || columns.size() == 0) {
+//            throw DataXException.asDataXException(
+//                    CommonErrorCode.CONFIG_ERROR,
+//                    "column属性必填");
+//        }
         if(this.pagination){
             if(StringUtils.isBlank(this.totalParamPath)){
                 throw DataXException.asDataXException(CommonErrorCode.CONFIG_ERROR, "totalParamPath属性必填");
@@ -199,3 +227,68 @@ public abstract class BaseRestRequest implements RestRequest {
     }
 
 }
+
+class ColumnEntry {
+    private Integer index;
+    private String type;
+    private String value;
+    private String format;
+    private DateFormat dateParse;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+        if (StringUtils.isNotBlank(this.format)) {
+            this.dateParse = new SimpleDateFormat(this.format);
+        }
+    }
+
+    public DateFormat getDateFormat() {
+        return this.dateParse;
+    }
+
+    public String toJSONString() {
+        return ColumnEntry.toJSONString(this);
+    }
+
+    public static String toJSONString(ColumnEntry columnEntry) {
+        return JSON.toJSONString(columnEntry);
+    }
+}
+
