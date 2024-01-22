@@ -190,7 +190,6 @@ public class RestReader extends Reader {
 			PerfRecord queryPerfRecord = new PerfRecord(super.getTaskGroupId(), super.getTaskId(), PerfRecord.PHASE.SQL_QUERY);
 			queryPerfRecord.start();
 			String resp = restRequest.sendHttpRequest();
-//			String url = configuration.getString("url");
 			restRequest.send2Writer(recordSender, resp);
 			queryPerfRecord.end();
 		}

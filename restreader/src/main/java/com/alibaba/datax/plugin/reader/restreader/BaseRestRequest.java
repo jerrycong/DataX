@@ -9,23 +9,16 @@ import com.alibaba.datax.common.exception.CommonErrorCode;
 import com.alibaba.datax.common.exception.DataXException;
 import com.alibaba.datax.common.plugin.RecordSender;
 import com.alibaba.datax.common.util.Configuration;
-//import com.alibaba.datax.plugin.unstructuredstorage.reader.ColumnEntry;
-//import com.alibaba.datax.plugin.unstructuredstorage.reader.ColumnEntry;
-//import com.alibaba.datax.plugin.unstructuredstorage.reader.Key;
-//import com.alibaba.datax.plugin.unstructuredstorage.reader.UnstructuredStorageReaderUtil;
-//import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
-//import org.apache.commons.collections.CollectionUtils;
-//import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -90,7 +83,7 @@ public abstract class BaseRestRequest implements RestRequest {
         this.customHeader = this.configuration.getMap("customHeader", String.class);
         this.body = this.configuration.getString("body");
         this.dataPath = this.configuration.getString("dataPath", "");
-        this.dataMode = this.configuration.getString("dataMode", "multiData");
+        this.dataMode = this.configuration.getString(RestConstants.PARAMETER_DATAMODE, RestConstants.DATAMODE_MULTIDATA);
         this.pagination = this.configuration.getBool("pagination", false);
         this.totalParamPath = this.configuration.getString("totalParamPath");
         this.startIndexParam = this.configuration.getString("startIndexParam", "pageIndex");
@@ -127,6 +120,9 @@ public abstract class BaseRestRequest implements RestRequest {
     public void calculateTotalPages(String resp){
         Configuration jsonData = Configuration.from(resp);
         Integer totalRecords = jsonData.getInt(this.totalParamPath);
+        if(totalRecords == null){
+            throw DataXException.asDataXException(RestErrorCode.STATUS_ERROR, "获取总记录数失败: " + totalRecords);
+        }
 
         int pageSize = getPageSize();
 
@@ -151,9 +147,13 @@ public abstract class BaseRestRequest implements RestRequest {
     public void send2Writer(RecordSender recordSender, String jsonResp){
         //默认是数组格式
         Configuration jsonData = Configuration.from(jsonResp);
-//        LOG.info("jsonData: {}", jsonData);
-        List<Object> dataList = jsonData.getList(this.dataPath);
-        
+        String dataMode = this.configuration.getString(RestConstants.PARAMETER_DATAMODE, RestConstants.DATAMODE_MULTIDATA);
+        List<Object> dataList = null;
+        if(RestConstants.DATAMODE_ONEDATA.equals(dataMode)){
+            dataList = Arrays.asList(jsonData.get(this.dataPath));
+        } else {
+            dataList = jsonData.getList(this.dataPath);
+        }
 
 //        List<ColumnEntry> columns = UnstructuredStorageReaderUtil.getListColumnEntry(this.configuration, Key.COLUMN);
         List<ColumnEntry> columns = getListColumnEntry(this.configuration, "column");

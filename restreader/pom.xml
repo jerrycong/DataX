@@ -19,7 +19,7 @@
     </properties>
 
     <dependencies>
-        <!--<dependency>
+        <dependency>
             <groupId>com.alibaba.datax</groupId>
             <artifactId>datax-common</artifactId>
             <version>${datax-project-version}</version>
@@ -29,7 +29,7 @@
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>-->
+        </dependency>
 
         <!--<dependency>
             <groupId>com.alibaba.datax</groupId>

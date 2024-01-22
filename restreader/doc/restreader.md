@@ -18,7 +18,7 @@ RestReader提供了读取rest请求数据的能力，并支持自动并发请求
 
 3. post请求不支持form方式
 
-4. 数据格式：multiData 多条数据，返回为数组  oneData 单条数据，返回为Map。当前版本仅支持multiData
+4. 数据格式：multiData 多条数据，返回为数组  oneData 单条数据，返回为Map。
 
 
 
